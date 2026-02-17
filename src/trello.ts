@@ -46,11 +46,11 @@ export class TrelloService {
   }
 
   async getCards(listId: string): Promise<ApiResponse> {
-    return this.request("GET", `/lists/${listId}/cards?fields=name,desc,due,dueComplete,labels,idList,url,closed`);
+    return this.request("GET", `/lists/${listId}/cards?fields=name,desc,due,dueComplete,labels,idList,url,closed,pos`);
   }
 
   async getCard(cardId: string): Promise<ApiResponse> {
-    return this.request("GET", `/cards/${cardId}?fields=name,desc,due,dueComplete,labels,idList,idBoard,url,closed`);
+    return this.request("GET", `/cards/${cardId}?fields=name,desc,due,dueComplete,labels,idList,idBoard,url,closed,pos`);
   }
 
   async createCard(listId: string, name: string, opts?: { desc?: string; due?: string; idLabels?: string }): Promise<ApiResponse> {
