@@ -97,4 +97,95 @@ export class TrelloService {
   async removeLabel(cardId: string, labelId: string): Promise<ApiResponse> {
     return this.request("DELETE", `/cards/${cardId}/idLabels/${labelId}`);
   }
+
+  async reorderCard(cardId: string, position: string | number): Promise<ApiResponse> {
+    return this.request("PUT", `/cards/${cardId}?pos=${position}`);
+  }
+
+  async unarchiveCard(cardId: string): Promise<ApiResponse> {
+    return this.updateCard(cardId, { closed: false });
+  }
+
+  async deleteCard(cardId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/cards/${cardId}`);
+  }
+
+  async createList(boardId: string, name: string, pos?: string): Promise<ApiResponse> {
+    const params = new URLSearchParams();
+    params.set("name", name);
+    params.set("idBoard", boardId);
+    if (pos) params.set("pos", pos);
+    return this.request("POST", `/lists?${params.toString()}`);
+  }
+
+  async archiveList(listId: string): Promise<ApiResponse> {
+    return this.request("PUT", `/lists/${listId}?closed=true`);
+  }
+
+  async unarchiveList(listId: string): Promise<ApiResponse> {
+    return this.request("PUT", `/lists/${listId}?closed=false`);
+  }
+
+  async renameList(listId: string, name: string): Promise<ApiResponse> {
+    return this.request("PUT", `/lists/${listId}?name=${encodeURIComponent(name)}`);
+  }
+
+  async reorderList(listId: string, position: string | number): Promise<ApiResponse> {
+    return this.request("PUT", `/lists/${listId}?pos=${position}`);
+  }
+
+  async getComments(cardId: string): Promise<ApiResponse> {
+    return this.request("GET", `/cards/${cardId}/actions?filter=commentCard`);
+  }
+
+  async deleteComment(cardId: string, actionId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/cards/${cardId}/actions/${actionId}/comments`);
+  }
+
+  async getBoardMembers(boardId: string): Promise<ApiResponse> {
+    return this.request("GET", `/boards/${boardId}/members?fields=fullName,username`);
+  }
+
+  async addCardMember(cardId: string, memberId: string): Promise<ApiResponse> {
+    return this.request("POST", `/cards/${cardId}/idMembers?value=${memberId}`);
+  }
+
+  async removeCardMember(cardId: string, memberId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/cards/${cardId}/idMembers/${memberId}`);
+  }
+
+  async createLabel(boardId: string, name: string, color: string): Promise<ApiResponse> {
+    const params = new URLSearchParams();
+    params.set("name", name);
+    params.set("color", color);
+    return this.request("POST", `/boards/${boardId}/labels?${params.toString()}`);
+  }
+
+  async deleteLabel(labelId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/labels/${labelId}`);
+  }
+
+  async getChecklists(cardId: string): Promise<ApiResponse> {
+    return this.request("GET", `/cards/${cardId}/checklists`);
+  }
+
+  async createChecklist(cardId: string, name: string): Promise<ApiResponse> {
+    return this.request("POST", `/cards/${cardId}/checklists?name=${encodeURIComponent(name)}`);
+  }
+
+  async addChecklistItem(checklistId: string, name: string): Promise<ApiResponse> {
+    return this.request("POST", `/checklists/${checklistId}/checkItems?name=${encodeURIComponent(name)}`);
+  }
+
+  async toggleChecklistItem(cardId: string, checkItemId: string, state: string): Promise<ApiResponse> {
+    return this.request("PUT", `/cards/${cardId}/checkItem/${checkItemId}?state=${state}`);
+  }
+
+  async deleteChecklist(checklistId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/checklists/${checklistId}`);
+  }
+
+  async deleteChecklistItem(checklistId: string, checkItemId: string): Promise<ApiResponse> {
+    return this.request("DELETE", `/checklists/${checklistId}/checkItems/${checkItemId}`);
+  }
 }

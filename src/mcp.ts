@@ -113,6 +113,168 @@ function createMcpServer(trello: TrelloService): McpServer {
     return { content: [{ type: "text", text: JSON.stringify(result) }] };
   });
 
+  server.tool("reorder_card", "Reorder a card within its list", {
+    card_id: z.string().describe("Card ID to reorder"),
+    position: z.union([z.string(), z.number()]).describe("Position: 'top', 'bottom', or a positive number"),
+  }, async ({ card_id, position }) => {
+    const result = await trello.reorderCard(card_id, position);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("unarchive_card", "Unarchive a card (reopen / mark as not done)", {
+    card_id: z.string().describe("Card ID to unarchive"),
+  }, async ({ card_id }) => {
+    const result = await trello.unarchiveCard(card_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("delete_card", "Permanently delete a card", {
+    card_id: z.string().describe("Card ID to delete"),
+  }, async ({ card_id }) => {
+    const result = await trello.deleteCard(card_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("create_list", "Create a new list on a board", {
+    board_id: z.string().describe("Board ID"),
+    name: z.string().describe("List name"),
+    position: z.string().optional().describe("Position: 'top', 'bottom', or a number"),
+  }, async ({ board_id, name, position }) => {
+    const result = await trello.createList(board_id, name, position);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("archive_list", "Archive a list", {
+    list_id: z.string().describe("List ID to archive"),
+  }, async ({ list_id }) => {
+    const result = await trello.archiveList(list_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("unarchive_list", "Unarchive a list", {
+    list_id: z.string().describe("List ID to unarchive"),
+  }, async ({ list_id }) => {
+    const result = await trello.unarchiveList(list_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("rename_list", "Rename a list", {
+    list_id: z.string().describe("List ID"),
+    name: z.string().describe("New list name"),
+  }, async ({ list_id, name }) => {
+    const result = await trello.renameList(list_id, name);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("reorder_list", "Reorder a list on its board", {
+    list_id: z.string().describe("List ID to reorder"),
+    position: z.union([z.string(), z.number()]).describe("Position: 'top', 'bottom', or a positive number"),
+  }, async ({ list_id, position }) => {
+    const result = await trello.reorderList(list_id, position);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("get_comments", "Get comments on a card", {
+    card_id: z.string().describe("Card ID"),
+  }, async ({ card_id }) => {
+    const result = await trello.getComments(card_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("delete_comment", "Delete a comment from a card", {
+    card_id: z.string().describe("Card ID"),
+    action_id: z.string().describe("Comment action ID"),
+  }, async ({ card_id, action_id }) => {
+    const result = await trello.deleteComment(card_id, action_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("get_board_members", "Get members of a board", {
+    board_id: z.string().describe("Board ID"),
+  }, async ({ board_id }) => {
+    const result = await trello.getBoardMembers(board_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("add_card_member", "Assign a member to a card", {
+    card_id: z.string().describe("Card ID"),
+    member_id: z.string().describe("Member ID to assign"),
+  }, async ({ card_id, member_id }) => {
+    const result = await trello.addCardMember(card_id, member_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("remove_card_member", "Remove a member from a card", {
+    card_id: z.string().describe("Card ID"),
+    member_id: z.string().describe("Member ID to remove"),
+  }, async ({ card_id, member_id }) => {
+    const result = await trello.removeCardMember(card_id, member_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("create_label", "Create a new label on a board", {
+    board_id: z.string().describe("Board ID"),
+    name: z.string().describe("Label name"),
+    color: z.string().describe("Label color (green, yellow, orange, red, purple, blue, sky, lime, pink, black, null)"),
+  }, async ({ board_id, name, color }) => {
+    const result = await trello.createLabel(board_id, name, color);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("delete_label", "Delete a label from a board", {
+    label_id: z.string().describe("Label ID to delete"),
+  }, async ({ label_id }) => {
+    const result = await trello.deleteLabel(label_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("get_checklists", "Get checklists on a card", {
+    card_id: z.string().describe("Card ID"),
+  }, async ({ card_id }) => {
+    const result = await trello.getChecklists(card_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("create_checklist", "Create a checklist on a card", {
+    card_id: z.string().describe("Card ID"),
+    name: z.string().describe("Checklist name"),
+  }, async ({ card_id, name }) => {
+    const result = await trello.createChecklist(card_id, name);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("add_checklist_item", "Add an item to a checklist", {
+    checklist_id: z.string().describe("Checklist ID"),
+    name: z.string().describe("Item text"),
+  }, async ({ checklist_id, name }) => {
+    const result = await trello.addChecklistItem(checklist_id, name);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("toggle_checklist_item", "Check or uncheck a checklist item", {
+    card_id: z.string().describe("Card ID"),
+    check_item_id: z.string().describe("Check item ID"),
+    state: z.enum(["complete", "incomplete"]).describe("'complete' or 'incomplete'"),
+  }, async ({ card_id, check_item_id, state }) => {
+    const result = await trello.toggleChecklistItem(card_id, check_item_id, state);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("delete_checklist", "Delete a checklist from a card", {
+    checklist_id: z.string().describe("Checklist ID to delete"),
+  }, async ({ checklist_id }) => {
+    const result = await trello.deleteChecklist(checklist_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
+  server.tool("delete_checklist_item", "Delete an item from a checklist", {
+    checklist_id: z.string().describe("Checklist ID"),
+    check_item_id: z.string().describe("Check item ID to delete"),
+  }, async ({ checklist_id, check_item_id }) => {
+    const result = await trello.deleteChecklistItem(checklist_id, check_item_id);
+    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+  });
+
   return server;
 }
 
